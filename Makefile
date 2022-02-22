@@ -457,6 +457,11 @@ dev.dbshell:
 dev.dbshell.%: ## Run a SQL shell on the given database.
 	docker-compose exec mysql57 bash -c "mysql $*"
 
+dev.dbcopy8.%: ## Copy data from old mysql 5.7 container into a new 8 db
+	docker-compose exec mysql57 bash -c "mysqldump $*" > .dev/$*.sql
+	docker-compose exec -T mysql8 bash -c "mysql $*" < .dev/$*.sql
+	rm .dev/$*.sql
+
 # List of Makefile targets to run static asset generation, in the form dev.static.$(service)
 # Services will only have their asset generation added here
 # if the service is present in both $(DEFAULT_SERVICES) and $(ASSET_SERVICES).
@@ -620,4 +625,3 @@ build-courses: ## Build course and provision studio, and ecommerce with it.
 	$(WINPTY) bash ./course-generator/build-course-json.sh course-generator/tmp-config.json
 	$(WINPTY) bash ./course-generator/create-courses.sh --studio --ecommerce course-generator/tmp-config.json
 	rm course-generator/tmp-config.json
-
