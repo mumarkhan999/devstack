@@ -124,6 +124,7 @@ echo -e "${GREEN}Will provision the following:\n  ${to_provision_ordered}${NC}"
 
 # Bring the databases online.
 docker-compose up -d mysql57
+docker-compose up -d mysql8 # (temporary until 5.7 is removed)
 if needs_mongo "$to_provision_ordered"; then
 	docker-compose up -d mongo
 fi
@@ -136,6 +137,15 @@ do
   sleep 1
 done
 
+# Temporary fix until MySQL 5.7 is removed)
+echo "${GREEN}Waiting for MySQL 8.${NC}"
+until docker-compose exec -T mysql8 bash -c "mysql -uroot -se \"SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'root')\"" &> /dev/null
+do
+  printf "."
+  sleep 1
+done
+
+
 # In the event of a fresh MySQL container, wait a few seconds for the server to restart
 # See https://github.com/docker-library/mysql/issues/245 for why this is necessary.
 sleep 5
@@ -146,6 +156,12 @@ echo -e "${GREEN}MySQL ready.${NC}"
 # (A no-op for databases and users that already exist).
 echo -e "${GREEN}Ensuring MySQL 5.7 databases and users exist...${NC}"
 docker-compose exec -T mysql57 bash -e -c "mysql -uroot mysql" < provision.sql
+
+
+# Temporary fix until MySQL 5.7 is removed)
+echo -e "${GREEN}Ensuring MySQL 8 databases and users exist...${NC}"
+docker-compose exec -T mysql8 bash -e -c "mysql -uroot mysql" < provision.sql
+
 
 # If necessary, ensure the MongoDB server is online and usable
 # and create its users.
