@@ -332,14 +332,14 @@ services:
     depends_on:
       - elasticsearch710
       - memcached
-      - mysql8
+      - mysql57
     # Allows attachment to the discovery service using 'docker attach <containerID>'.
     stdin_open: true
     tty: true
     environment:
       # This next DB_MIGRATION_HOST line can be removed once edx/configuration has been updated with this value for
       # a while and most people have had a chance to do a "make pull" to get the latest images.
-      DB_MIGRATION_HOST: edx.devstack.mysql8
+      DB_MIGRATION_HOST: edx.devstack.mysql57
       TEST_ELASTICSEARCH_URL: "edx.devstack.elasticsearch710"
       ENABLE_DJANGO_TOOLBAR: 1
       DJANGO_WATCHMAN_TIMEOUT: 30
@@ -361,7 +361,7 @@ services:
       - discovery
       - lms
       - memcached
-      - mysql8
+      - mysql57
     # Allows attachment to the ecommerce service using 'docker attach <containerID>'.
     stdin_open: true
     tty: true
@@ -385,7 +385,7 @@ services:
       - devpi
       - elasticsearch710
       - lms
-      - mysql57
+      - mysql8
     image: edxops/notes:${OPENEDX_RELEASE:-latest}
     networks:
       default:
@@ -395,7 +395,7 @@ services:
       - "18120:18120"
     environment:
       DB_ENGINE: "django.db.backends.mysql"
-      DB_HOST: "edx.devstack.mysql57"
+      DB_HOST: "edx.devstack.mysql8"
       DB_NAME: "notes"
       DB_PASSWORD: "password"
       DB_PORT: "3306"
@@ -517,7 +517,7 @@ services:
     depends_on:
       - discovery
       - lms
-      - mysql57
+      - mysql8
       - memcached
       - redis
       - registrar-worker
@@ -525,7 +525,7 @@ services:
     stdin_open: true
     tty: true
     environment:
-      DB_HOST: edx.devstack.mysql57
+      DB_HOST: edx.devstack.mysql8
       DB_NAME: registrar
       DB_PORT: 3306
       DB_USER: registrar001
@@ -555,12 +555,12 @@ services:
     hostname: registrar-worker.devstack.edx
     depends_on:
       - lms
-      - mysql57
+      - mysql8
       - redis
     stdin_open: true
     tty: true
     environment:
-      DB_HOST: edx.devstack.mysql57
+      DB_HOST: edx.devstack.mysql8
       DB_NAME: registrar
       DB_PORT: 3306
       DB_USER: registrar001
